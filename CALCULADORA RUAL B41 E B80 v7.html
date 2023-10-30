@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora RURAL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-top: 70px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #000; /* Texto em preto */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Sombra no texto */
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input {
+            padding: 8px;
+            width: calc(100% - 16px);
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            transition: background-color 0.3s;
+            width: 100%;
+            max-width: 200px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Sombra no texto do botão */
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .resultado {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 20px;
+            color: #007bff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Sombra no texto do resultado */
+        }
+
+        .timeline {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Sombra na linha do tempo */
+        }
+
+        .date-box {
+            text-align: center;
+            border: 1px solid #ccc;
+            padding: 5px;
+            margin: 5px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 4px;
+            min-width: 100px;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Sombra na caixa de data */
+        }
+
+        .date-box.ate {
+            background-color: #555;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+            margin-top: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Sombra no texto do rodapé */
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                max-width: 1000px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora Rural</h1>
+
+        <div id="calculadoraB41">
+            <h2>Fracionamento do período Autodeclarado - B41</h2>
+
+            <label for="dataInicial">Data Inicial:</label>
+            <input type="date" id="dataInicial">
+
+            <label for="dataFinal">Data Final:</label>
+            <input type="date" id="dataFinal">
+
+            <button onclick="calcularDatas()">Calcular</button>
+
+            <div id="linhaDoTempo" class="timeline"></div>
+        </div>
+
+        <div id="calculadoraB80">
+            <h2>Data início da gravidez - B80</h2>
+
+            <label for="dataFatoGerador">Data do Parto:</label>
+            <input type="date" id="dataFatoGerador">
+
+            <button onclick="calcular()">Calcular</button>
+
+            <div id="resultado" class="resultado"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+      
+        <p>Desenvolvido por ESTANISLAU MORAIS - SARD/GEXIMP - Todos os direitos reservados - copyright ©.</p>
+    </div>
+
+    <script>
+        function calcularDatas() {
+            var dataInicial = new Date(document.getElementById('dataInicial').value + "T00:00:00");
+            var dataFinal = new Date(document.getElementById('dataFinal').value + "T00:00:00");
+            var fracaoAnos = 7;
+            var fracaoMeses = 6;
+
+            var linhaDoTempo = document.getElementById('linhaDoTempo');
+            linhaDoTempo.innerHTML = '';
+
+            var dataAtual = new Date(dataFinal);
+
+            while (dataAtual >= dataInicial) {
+                var dateBox = document.createElement('div');
+                dateBox.classList.add('date-box');
+                dateBox.textContent = dataAtual.toLocaleDateString('pt-BR');
+                linhaDoTempo.appendChild(dateBox);
+
+                var novaData = new Date(dataAtual);
+                novaData.setFullYear(dataAtual.getFullYear() - fracaoAnos);
+
+                var meses = novaData.getMonth() - fracaoMeses;
+                novaData.setMonth(meses);
+
+                if (novaData >= dataInicial) {
+                    var ateLabel = document.createElement('div');
+                    ateLabel.classList.add('date-box', 'ate');
+                    ateLabel.textContent = 'até';
+                    linhaDoTempo.appendChild(ateLabel);
+                } else {
+                    var ateLabel = document.createElement('div');
+                    ateLabel.classList.add('date-box', 'ate');
+                    ateLabel.textContent = 'até';
+                    linhaDoTempo.appendChild(ateLabel);
+
+                    var ultimaDateBox = document.createElement('div');
+                    ultimaDateBox.classList.add('date-box');
+                    ultimaDateBox.textContent = dataInicial.toLocaleDateString('pt-BR');
+                    linhaDoTempo.appendChild(ultimaDateBox);
+                }
+
+                dataAtual = novaData;
+            }
+        }
+
+        function calcular() {
+            var dataFatoGerador = new Date(document.getElementById('dataFatoGerador').value + "T00:00:00");
+            var resultadoElement = document.getElementById('resultado');
+
+            var novaData = new Date(dataFatoGerador);
+            novaData.setMonth(dataFatoGerador.getMonth() - 10);
+
+            var resultadoTexto = "A data provável do início da gravidez é: " + novaData.toLocaleDateString('pt-BR');
+            resultadoElement.textContent = resultadoTexto;
+        }
+    </script>
+</body>
+</html>
